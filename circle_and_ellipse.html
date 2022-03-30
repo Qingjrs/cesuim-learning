@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Circle And Ellipse</title>
+    <link rel="stylesheet" href="lib/Cesium/Widgets/widgets.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="viewer"></div>
+    <script src="lib/Cesium/Cesium.js"></script>
+    <script src="./js/defaultOption.js"></script>
+    <script>
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiZTg5M2ViMi0xM2I2LTQwNDAtODFmZS1jNDM5OTI0OWJhNDkiLCJpZCI6Mjc4ODIsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTAyODAxNTh9.OZdCoOBju7vRhRQbCXrxqosQf2CP0Ju34InEdVrIJLQ";
+
+      // tms
+      const tmsImage = new Cesium.TileMapServiceImageryProvider({
+        url: "http://localhost:81/imageService/world/",
+        maximumLevel: 5,
+      });
+
+      // wmts
+      const wmtsImage = new Cesium.UrlTemplateImageryProvider({
+        url: "http://localhost:81/imageService/worldWmts/{z}/{x}/{y}.png",
+        maximumLevel: 5,
+      });
+
+      const viewer = new Cesium.Viewer("viewer", {
+        ...defaultOption,
+        imageryProvider: tmsImage,
+      });
+
+      viewer.camera.flyTo({
+        destination: Cesium.Rectangle.fromDegrees(
+          105.3314208984375,
+          28.3285599713617,
+          105.3314208984375,
+          30.439202087235582
+        ),
+      });
+
+      const greenCircle = viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(
+          106.534423828125,
+          29.516110386062277,
+          15000
+        ),
+        name: "Green circle at height with outline",
+        ellipse: {
+          semiMinorAxis: 300000.0,
+          semiMajorAxis: 300000.0,
+          height: 200000.0,
+          material: Cesium.Color.GREEN,
+          outline: true, // height must be set for outline to display
+        },
+      });
+
+      const redEllipse = viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(
+          106.534423828125,
+          29.516110386062277
+        ),
+        name: "Red ellipse on surface",
+        ellipse: {
+          semiMinorAxis: 250000.0,
+          semiMajorAxis: 400000.0,
+          material: Cesium.Color.RED.withAlpha(0.5),
+        },
+      });
+
+      const blueEllipse = viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(
+          106.534423828125,
+          29.516110386062277,
+          500
+        ),
+        name: "Blue translucent, rotated, and extruded ellipse with outline",
+        ellipse: {
+          semiMinorAxis: 150000.0,
+          semiMajorAxis: 300000.0,
+          extrudedHeight: 100000.0,
+          rotation: Cesium.Math.toRadians(45),
+          material: Cesium.Color.BLUE.withAlpha(0.5),
+          outline: true,
+        },
+      });
+    </script>
+  </body>
+</html>

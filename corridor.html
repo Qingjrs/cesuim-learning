@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corridor</title>
+    <link rel="stylesheet" href="lib/Cesium/Widgets/widgets.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="viewer"></div>
+    <script src="lib/Cesium/Cesium.js"></script>
+    <script src="./js/defaultOption.js"></script>
+    <script>
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiZTg5M2ViMi0xM2I2LTQwNDAtODFmZS1jNDM5OTI0OWJhNDkiLCJpZCI6Mjc4ODIsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTAyODAxNTh9.OZdCoOBju7vRhRQbCXrxqosQf2CP0Ju34InEdVrIJLQ";
+
+      // tms
+      const tmsImage = new Cesium.TileMapServiceImageryProvider({
+        url: "http://localhost:81/imageService/world/",
+        maximumLevel: 5,
+      });
+
+      // wmts
+      const wmtsImage = new Cesium.UrlTemplateImageryProvider({
+        url: "http://localhost:81/imageService/worldWmts/{z}/{x}/{y}.png",
+        maximumLevel: 5,
+      });
+
+      const viewer = new Cesium.Viewer("viewer", {
+        ...defaultOption,
+        imageryProvider: tmsImage,
+      });
+
+      const redCorridor = viewer.entities.add({
+        name: "Red corridor on surface with rounded corners",
+        corridor: {
+          positions: Cesium.Cartesian3.fromDegreesArray([
+            -100.0, 40.0, -105.0, 40.0, -105.0, 35.0,
+          ]),
+          width: 200000.0,
+          material: Cesium.Color.RED.withAlpha(0.5),
+        },
+      });
+
+      const greenCorridor = viewer.entities.add({
+        name: "Green corridor at height with mitered corners and outline",
+        corridor: {
+          positions: Cesium.Cartesian3.fromDegreesArray([
+            -90.0, 40.0, -95.0, 40.0, -95.0, 35.0,
+          ]),
+          height: 100000.0,
+          width: 200000.0,
+          cornerType: Cesium.CornerType.MITERED,
+          material: Cesium.Color.GREEN,
+          outline: true, // height required for outlines to display
+        },
+      });
+
+      const blueCorridor = viewer.entities.add({
+        name: "Blue extruded corridor with beveled corners and outline",
+        corridor: {
+          positions: Cesium.Cartesian3.fromDegreesArray([
+            -80.0, 40.0, -85.0, 40.0, -85.0, 35.0,
+          ]),
+          height: 200000.0,
+          extrudedHeight: 100000.0,
+          width: 200000.0,
+          cornerType: Cesium.CornerType.BEVELED,
+          material: Cesium.Color.BLUE.withAlpha(0.5),
+          outline: true,
+          outlineColor: Cesium.Color.WHITE,
+        },
+      });
+
+      viewer.zoomTo(viewer.entities);
+    </script>
+  </body>
+</html>
